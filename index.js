@@ -52,7 +52,11 @@ function recipesFactory(data) {
 // barre de recherche 
 
 let inputSearch = document.querySelector('input');
-inputSearch.addEventListener('input', () => { updateUI(recipes) })
+inputSearch.addEventListener('input', (event) => { 
+	if (event.target.value.length > 2) {
+		updateUI(recipes)
+	}
+})
 
 function displayRecipes(recipes) {
     sectionRecipes.innerHTML = ''
@@ -64,7 +68,7 @@ function displayRecipes(recipes) {
 // ///////////////////////////////////////////////////////////
 
 function updateUI(recipes = recipes) {
-    let filteredRecipes = filterSearch(recipes)
+    const filteredRecipes = filterSearch(recipes)
     displayRecipes(filteredRecipes)
     return filteredRecipes
 }
@@ -84,20 +88,38 @@ function filterSearch(recipes) {
         ustensils: selectedTagUstensils
     }
 
-    let filteredData = recipes.filter((recipe) => {
+    const filteredData = []
+
+    for ( let i = 0; i < recipes.length; i++) {
+        const recipe = recipes[i]
+
         if((recipe.name.includes(query.text) ||
-            recipe.description.includes(query.text) ||
-            recipe.ingredients.includes(query.text))
+           recipe.description.includes(query.text)||
+           recipe.ingredients.includes(query.text))
           && (query.ingredients.every(i => 
          recipe.ingredients.map(ingre => ingre.ingredient).includes(i)
           )) 
           && (query.appliances.every(i => recipe.appliance.includes(i)))
           && (query.ustensils.every(i => recipe.ustensils.map(ustensil => ustensil).includes(i)))
+        ){
+            filteredData.push(recipe)
+           }
+    }
+
+    // let filteredData = recipes.filter((recipe) => {
+    //     if((recipe.name.includes(query.text) ||
+    //         recipe.description.includes(query.text) ||
+    //         recipe.ingredients.includes(query.text))
+    //       && (query.ingredients.every(i => 
+    //      recipe.ingredients.map(ingre => ingre.ingredient).includes(i)
+    //       )) 
+    //       && (query.appliances.every(i => recipe.appliance.includes(i)))
+    //       && (query.ustensils.every(i => recipe.ustensils.map(ustensil => ustensil).includes(i)))
     
-        ) {
-            return true
-        }
-    })
+    //     ) {
+    //         return true
+    //     }
+    // })
     return filteredData;
 }
 
@@ -114,59 +136,61 @@ filterUstensils.addEventListener('click', filterClick);
 
 function filterClick(e) {
     const filtered = updateUI(recipes);
-    const getRecipeIngredient = getIngredient(filtered);
-    const getRecipeAppliance = getAppliance(filtered);
-    const getRecipeUstensils = getUstensils(filtered);
+    const getIngredientList = getIngredient(filtered);
+    const getApplianceList = getAppliance(filtered);
+    const getUstensilsList = getUstensils(filtered);
 
     if(e.target.tagName === 'INPUT'){  // on selectionnee 'input' par defaut avec ' e.target.closest('.filterClass.....'). cest pour eviter de cela
         return 
     }
 
     if (e.target.closest('.filterClassIngredients')) {
-        displayFilterClick(getRecipeIngredient, filterIngredients, text.ingredients);
+        displayFilterClick(getIngredientList, filterIngredients, text.ingredients);
         hideListe(filterUstensils, text.ustensils);
         hideListe(filterAppliances, text.appareils);
     }
     if (e.target.closest('.filterClassAppliances')) {
-        displayFilterClick(getRecipeAppliance, filterAppliances, text.appareils);
+        displayFilterClick(getApplianceList, filterAppliances, text.appareils);
         hideListe(filterUstensils, text.ustensils);
         hideListe(filterIngredients, text.ingredients)
     }
     if (e.target.closest('.filterClassUstensils')) {
-        displayFilterClick(getRecipeUstensils, filterUstensils, text.ustensils)
+        displayFilterClick(getUstensilsList, filterUstensils, text.ustensils)
         hideListe(filterAppliances, text.appareils);
         hideListe(filterIngredients, text.ingredients);
     }
+
+   
 }
 
 // display //////////////////////
 
-function displayFilterClick(listeByType, DOMFilterClick, nameOfElement) {
+function displayFilterClick(listeElement, blocElement, nameElement) {
     const code = ` 
     <div class="bloc-allType">
-        <input type="search" class="input-allType" placeholder="Rechercher un ${nameOfElement}">
+        <input type="search" class="input-allType" placeholder="Rechercher un ${nameElement}">
         <i class="fa-solid fa-angle-up angleUp"></i>
     </div>
     <ul class="card-allType"></ul>
     `
-    DOMFilterClick.innerHTML = code;
-    DOMFilterClick.classList.replace('filter', 'filterClassAll');
-    const searchType = DOMFilterClick.querySelector('.input-allType');
+    blocElement.innerHTML = code;
+    blocElement.classList.replace('filter', 'filterClassAll');
+    const searchType = blocElement.querySelector('.input-allType');
 
-    listeByType.forEach(nameLi => {
-        const allBlocUl = DOMFilterClick.querySelector('ul');
+    listeElement.forEach(nameLi => {
+        const allBlocUl = blocElement.querySelector('ul');
         const allBlocLi = document.createElement('li');
         allBlocLi.classList.add('allTypeLi');
         allBlocLi.innerText = nameLi;
         allBlocUl.appendChild(allBlocLi);
 
-        allBlocLi.addEventListener('click', () => functionTag(DOMFilterClick,nameLi, nameOfElement))
+        allBlocLi.addEventListener('click', () => functionTag(blocElement,nameLi, nameElement))
     })
 
     searchType.addEventListener('change', () => {
-        const allBlocUl = DOMFilterClick.querySelector('ul');
+        const allBlocUl = blocElement.querySelector('ul');
         allBlocUl.innerHTML = ''
-        let filteredByType = listeByType.filter(label => {
+        let filteredByType = listeElement.filter(label => {
             if (label.includes(searchType.value)) {
                 return true
             }
@@ -187,26 +211,25 @@ let tagIngredientsBloc = document.querySelector('.tagIngredientsBloc ')
 let tagAppliancesBloc = document.querySelector('.tagAppliancesBloc ')
 let tagUstensilsBloc = document.querySelector('.tagUstensilsBloc ')
 
-function functionTag(DOMFilterClick,nameLi, nameOfElement) {
+function functionTag(blocElement,nameLi, nameElement) {
     const code = `
-    <div class="${nameOfElement} tag${nameOfElement}">
+    <div class="${nameElement} tag${nameElement}">
         <p>${nameLi}</p>
         <i class="fa-regular fa-circle-xmark closeTag"></i>
     </div>
     `   
 
-    if(selectedTagIngredients.includes(nameLi) == false && DOMFilterClick.className === 'filterClassAll filterClassIngredients'){
+    if(selectedTagIngredients.includes(nameLi) == false && blocElement.className === 'filterClassAll filterClassIngredients'){
         tagIngredientsBloc.innerHTML += code;
         selectedTagIngredients.push(nameLi)
     }
-    if(selectedTagAppliances.includes(nameLi) == false && DOMFilterClick.className === 'filterClassAll filterClassAppliances'){
+    if(selectedTagAppliances.includes(nameLi) == false && blocElement.className === 'filterClassAll filterClassAppliances'){
         tagAppliancesBloc.innerHTML += code;
         selectedTagAppliances.push(nameLi)        
     }
-    if(selectedTagUstensils.includes(nameLi) == false && DOMFilterClick.className === 'filterClassAll filterClassUstensils'){
+    if(selectedTagUstensils.includes(nameLi) == false && blocElement.className === 'filterClassAll filterClassUstensils'){
         tagUstensilsBloc.innerHTML += code;
         selectedTagUstensils.push(nameLi)
-        // consogggggle.log(selectedTagUstensils);
     }
 
     const closeTag = document.querySelectorAll('.closeTag');
