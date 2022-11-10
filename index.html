@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/0a1e7f6dec.js" crossorigin="anonymous"></script>
+    <title>Les petits plats</title>
+</head>
+<body>
+    <header>
+        <img src="asset/download.png" alt="logo" class="logo">
+    </header>
+
+    <main>
+        <section id="search" >
+            <input class="input-search" type="search" placeholder="Rechercher une recette">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </section>
+    
+        <section class="tag">
+            <div class="tagIngredientsBloc "></div>
+            <div class="tagAppliancesBloc "></div>
+            <div class="tagUstensilsBloc "></div>
+        </section>
+
+        <section id="section-filter" >
+            <div class="filter filterClassIngredients">
+                <p class="textButton" >Ingredients</p>
+                <i class="fa-solid fa-angle-down angleDown"></i>
+            </div>
+            <div class="filter filterClassAppliances">
+                <p class="textButton" >Appareils</p>
+                <i class="fa-solid fa-angle-down angleDown"></i>
+            </div>
+            <div class="filter filterClassUstensils">
+                <p class="textButton" >Ustensiles</p>
+                <i class="fa-solid fa-angle-down angleDown"></i>
+            </div>
+        </section>
+    
+        <section id="section-recipe" >
+        </section>
+    </main>
+    <script type="module" src="index.js" ></script>
+</body>
+</html>
