@@ -106,20 +106,6 @@ function filterSearch(recipes) {
            }
     }
 
-    // let filteredData = recipes.filter((recipe) => {
-    //     if((recipe.name.includes(query.text) ||
-    //         recipe.description.includes(query.text) ||
-    //         recipe.ingredients.includes(query.text))
-    //       && (query.ingredients.every(i => 
-    //      recipe.ingredients.map(ingre => ingre.ingredient).includes(i)
-    //       )) 
-    //       && (query.appliances.every(i => recipe.appliance.includes(i)))
-    //       && (query.ustensils.every(i => recipe.ustensils.map(ustensil => ustensil).includes(i)))
-    
-    //     ) {
-    //         return true
-    //     }
-    // })
     return filteredData;
 }
 
